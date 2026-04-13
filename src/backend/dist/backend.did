@@ -1,0 +1,121 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type StripeSessionStatus = 
+ variant {
+   completed: record {
+                response: text;
+                userPrincipal: opt text;
+              };
+   failed: record {error: text;};
+ };
+type StripeConfiguration = 
+ record {
+   allowedCountries: vec text;
+   secretKey: text;
+ };
+type ShoppingItem = 
+ record {
+   currency: text;
+   priceInCents: nat;
+   productDescription: text;
+   productName: text;
+   quantity: nat;
+ };
+type RoomId = nat;
+type Room = 
+ record {
+   amenities: vec text;
+   bedType: text;
+   capacity: nat;
+   description: text;
+   id: RoomId;
+   imageUrls: vec text;
+   isAvailable: bool;
+   name: text;
+   nightlyRate: nat;
+ };
+type ReservationStatus = 
+ variant {
+   Confirmed;
+   Pending;
+   Rejected;
+ };
+type ReservationId = nat;
+type Reservation = 
+ record {
+   checkIn: int;
+   checkOut: int;
+   createdAt: int;
+   depositAmount: nat;
+   depositPaid: bool;
+   guestEmail: text;
+   guestName: text;
+   guestPhone: text;
+   id: ReservationId;
+   numGuests: nat;
+   rejectionReason: opt text;
+   roomId: RoomId;
+   status: ReservationStatus;
+   stripePaymentIntentId: opt text;
+   totalAmount: nat;
+ };
+type CreateReservationResult = 
+ variant {
+   err: text;
+   ok: ReservationId;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  checkAvailability: (roomId: RoomId, checkIn: int, checkOut: int) ->
+   (bool) query;
+  confirmReservation: (reservationId: ReservationId) -> ();
+  createCheckoutSession: (items: vec ShoppingItem, successUrl: text,
+   cancelUrl: text) -> (text);
+  createDepositPaymentIntent: (reservationId: ReservationId) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  createReservation: (guestName: text, guestEmail: text, guestPhone: 
+   text, roomId: RoomId, checkIn: int, checkOut: int, numGuests: nat) ->
+   (CreateReservationResult);
+  getCallerUserRole: () -> (UserRole) query;
+  getReservation: (reservationId: ReservationId) -> (opt Reservation) query;
+  getStripeSessionStatus: (sessionId: text) -> (StripeSessionStatus);
+  isCallerAdmin: () -> (bool) query;
+  isStripeConfigured: () -> (bool) query;
+  listReservations: () -> (vec Reservation) query;
+  listRooms: () -> (vec Room) query;
+  recordDepositPaid: (reservationId: ReservationId, stripePaymentIntentId:
+   text) -> ();
+  rejectReservation: (reservationId: ReservationId, reason: text) -> ();
+  setStripeConfiguration: (config: StripeConfiguration) -> ();
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+}

@@ -1,0 +1,24 @@
+{
+  "overview": "A hotel booking application for guests to browse and reserve rooms, and for hotel staff to manage reservations and confirm them after deposits are received via Stripe.",
+  "features": [
+    "Browse available rooms with photos and pricing",
+    "Guest reservation form with check-in/out dates",
+    "Stripe deposit payment during checkout",
+    "Booking confirmation page with reference number",
+    "Staff dashboard with Internet Identity login",
+    "Reservation queue with payment status indicators",
+    "Staff confirm or reject reservations",
+    "Pre-configured room inventory with sample data"
+  ],
+  "category": "hospitality",
+  "tags": [
+    "hotel",
+    "booking",
+    "reservations",
+    "hospitality",
+    "stripe",
+    "payments",
+    "staff-management"
+  ],
+  "last_updated": "2026-04-13T07:53:39.288Z"
+}

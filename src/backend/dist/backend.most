@@ -1,0 +1,71 @@
+// Version: 1.0.0
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type ReservationId__964592880 = Nat;
+type ReservationStatus__140201794 = {#Confirmed; #Pending; #Rejected};
+type Reservation__921874833 =
+  {
+    checkIn : Int;
+    checkOut : Int;
+    createdAt : Int;
+    depositAmount : Nat;
+    depositPaid : Bool;
+    guestEmail : Text;
+    guestName : Text;
+    guestPhone : Text;
+    id : ReservationId__964592880;
+    numGuests : Nat;
+    rejectionReason : ?Text;
+    roomId : RoomId__233137799;
+    status : ReservationStatus__140201794;
+    stripePaymentIntentId : ?Text;
+    totalAmount : Nat
+  };
+type RoomId__233137799 = Nat;
+type Room__38117849 =
+  {
+    amenities : [Text];
+    bedType : Text;
+    capacity : Nat;
+    description : Text;
+    id : RoomId__233137799;
+    imageUrls : [Text];
+    isAvailable : Bool;
+    name : Text;
+    nightlyRate : Nat
+  };
+type StripeConfiguration__96897619 =
+  {allowedCountries : [Text]; secretKey : Text};
+type UserRole__1054455867 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable nextReservationId : {var value : Nat};
+  stable reservations :
+    {
+      var root :
+        Node__46230540<ReservationId__964592880, Reservation__921874833>;
+      var size : Nat__490723111
+    };
+  stable rooms :
+    {
+      var root : Node__46230540<RoomId__233137799, Room__38117849>;
+      var size : Nat__490723111
+    };
+  stable var stripeConfig : ?StripeConfiguration__96897619;
+  stable stripeSecretKey : {var value : ?Text}
+};
